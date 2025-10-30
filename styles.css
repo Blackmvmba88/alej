@@ -588,6 +588,10 @@ footer {
     box-shadow: var(--shadow-hover);
     animation: slideIn 0.5s ease;
     z-index: 3000;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    max-width: 300px;
+    word-wrap: break-word;
 }
 
 @keyframes slideIn {

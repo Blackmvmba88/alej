@@ -31,18 +31,18 @@
                 <p>Plataforma educativa gamificada para aprender física, matemáticas, arte y tecnología</p>
                 <button class="cta-button" onclick="scrollToModules()">Comenzar a Aprender</button>
             </div>
-            <div class="stats-bar">
+            <div class="stats-bar" role="status" aria-live="polite">
                 <div class="stat">
-                    <span class="stat-icon">🏆</span>
-                    <span class="stat-label">Puntos: <span id="total-points">0</span></span>
+                    <span class="stat-icon" aria-hidden="true">🏆</span>
+                    <span class="stat-label">Puntos: <span id="total-points" aria-label="Total de puntos">0</span></span>
                 </div>
                 <div class="stat">
-                    <span class="stat-icon">⭐</span>
-                    <span class="stat-label">Nivel: <span id="user-level">1</span></span>
+                    <span class="stat-icon" aria-hidden="true">⭐</span>
+                    <span class="stat-label">Nivel: <span id="user-level" aria-label="Nivel actual">1</span></span>
                 </div>
                 <div class="stat">
-                    <span class="stat-icon">🎖️</span>
-                    <span class="stat-label">Insignias: <span id="total-badges">0</span></span>
+                    <span class="stat-icon" aria-hidden="true">🎖️</span>
+                    <span class="stat-label">Insignias: <span id="total-badges" aria-label="Total de insignias">0</span></span>
                 </div>
             </div>
         </section>
@@ -180,10 +180,10 @@
         </section>
 
         <!-- Interactive Activity Area -->
-        <section id="activity-area" class="activity-area hidden">
+        <section id="activity-area" class="activity-area hidden" role="dialog" aria-modal="true" aria-labelledby="activity-title">
             <div class="activity-header">
                 <h3 id="activity-title">Actividad</h3>
-                <button class="close-btn" onclick="closeActivity()">✕</button>
+                <button class="close-btn" onclick="closeActivity()" aria-label="Cerrar actividad">✕</button>
             </div>
             <div id="activity-content" class="activity-content">
                 <!-- Dynamic content loaded here -->

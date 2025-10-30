@@ -14,34 +14,86 @@ let gameState = {
     }
 };
 
-// Load game state from localStorage
+// Animation tracking for cleanup
+let activeAnimations = {
+    pendulum: null,
+    projectile: null,
+    wave: null
+};
+
+// Cleanup function for animations
+function cleanupAnimations() {
+    Object.keys(activeAnimations).forEach(key => {
+        if (activeAnimations[key]) {
+            cancelAnimationFrame(activeAnimations[key]);
+            activeAnimations[key] = null;
+        }
+    });
+}
+
+// Load game state from localStorage with error handling
 function loadGameState() {
-    const saved = localStorage.getItem('alejGameState');
-    if (saved) {
-        gameState = JSON.parse(saved);
-        updateUI();
+    try {
+        const saved = localStorage.getItem('alejGameState');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Validate saved state structure
+            if (parsed && typeof parsed === 'object' && 
+                typeof parsed.points === 'number' && 
+                typeof parsed.level === 'number') {
+                gameState = {
+                    ...gameState,
+                    ...parsed,
+                    // Ensure achievements object exists
+                    achievements: parsed.achievements || gameState.achievements
+                };
+                updateUI();
+            }
+        }
+    } catch (error) {
+        console.warn('Error loading game state:', error);
+        // Reset to default state if corrupted
+        saveGameState();
     }
 }
 
-// Save game state to localStorage
+// Save game state to localStorage with error handling
 function saveGameState() {
-    localStorage.setItem('alejGameState', JSON.stringify(gameState));
+    try {
+        localStorage.setItem('alejGameState', JSON.stringify(gameState));
+    } catch (error) {
+        console.error('Error saving game state:', error);
+        // Handle quota exceeded or other storage errors
+        if (error.name === 'QuotaExceededError') {
+            showNotification('⚠️ No se pudo guardar el progreso');
+        }
+    }
 }
 
-// Update UI with current state
+// Update UI with current state (with null checks)
 function updateUI() {
-    document.getElementById('total-points').textContent = gameState.points;
-    document.getElementById('user-level').textContent = gameState.level;
-    document.getElementById('total-badges').textContent = gameState.badges;
+    const updateElement = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    };
     
-    document.getElementById('science-progress').style.width = gameState.scienceProgress + '%';
-    document.getElementById('science-percent').textContent = gameState.scienceProgress + '%';
+    const updateProgress = (id, percent) => {
+        const element = document.getElementById(id);
+        if (element) element.style.width = percent + '%';
+    };
     
-    document.getElementById('art-progress').style.width = gameState.artProgress + '%';
-    document.getElementById('art-percent').textContent = gameState.artProgress + '%';
+    updateElement('total-points', gameState.points);
+    updateElement('user-level', gameState.level);
+    updateElement('total-badges', gameState.badges);
     
-    document.getElementById('tech-progress').style.width = gameState.techProgress + '%';
-    document.getElementById('tech-percent').textContent = gameState.techProgress + '%';
+    updateProgress('science-progress', gameState.scienceProgress);
+    updateElement('science-percent', gameState.scienceProgress + '%');
+    
+    updateProgress('art-progress', gameState.artProgress);
+    updateElement('art-percent', gameState.artProgress + '%');
+    
+    updateProgress('tech-progress', gameState.techProgress);
+    updateElement('tech-percent', gameState.techProgress + '%');
     
     updateAchievements();
 }
@@ -59,17 +111,23 @@ function updateAchievements() {
     });
 }
 
-// Award points and update progress
+// Award points and update progress with validation
 function awardPoints(points, category) {
+    // Validate input
+    if (typeof points !== 'number' || points < 0) return;
+    
     gameState.points += points;
     
-    // Update category progress
-    if (category === 'science') {
-        gameState.scienceProgress = Math.min(100, gameState.scienceProgress + 5);
-    } else if (category === 'art') {
-        gameState.artProgress = Math.min(100, gameState.artProgress + 5);
-    } else if (category === 'tech') {
-        gameState.techProgress = Math.min(100, gameState.techProgress + 5);
+    // Update category progress with validated category
+    const progressIncrement = 5;
+    const categoryMap = {
+        'science': 'scienceProgress',
+        'art': 'artProgress',
+        'tech': 'techProgress'
+    };
+    
+    if (categoryMap[category]) {
+        gameState[categoryMap[category]] = Math.min(100, gameState[categoryMap[category]] + progressIncrement);
     }
     
     // Check for level up
@@ -84,16 +142,48 @@ function awardPoints(points, category) {
     showNotification(`+${points} puntos! 🏆`);
 }
 
-// Show notification
+// Show notification with queue management
+const notificationQueue = [];
+let isShowingNotification = false;
+
 function showNotification(message) {
+    if (!message || typeof message !== 'string') return;
+    
+    // Add to queue
+    notificationQueue.push(message);
+    
+    // Process queue if not already processing
+    if (!isShowingNotification) {
+        processNotificationQueue();
+    }
+}
+
+function processNotificationQueue() {
+    if (notificationQueue.length === 0) {
+        isShowingNotification = false;
+        return;
+    }
+    
+    isShowingNotification = true;
+    const message = notificationQueue.shift();
+    
     const notification = document.createElement('div');
     notification.className = 'score-notification';
     notification.textContent = message;
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('aria-live', 'polite');
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.remove();
-    }, 3000);
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+            // Process next notification
+            setTimeout(() => processNotificationQueue(), 300);
+        }, 300);
+    }, 2500);
 }
 
 // Unlock achievement
@@ -112,17 +202,31 @@ function scrollToModules() {
     document.getElementById('ciencias').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Close activity modal
+// Close activity modal with cleanup
 function closeActivity() {
-    document.getElementById('activity-area').classList.add('hidden');
+    const activityArea = document.getElementById('activity-area');
+    if (activityArea) {
+        activityArea.classList.add('hidden');
+    }
     document.body.style.overflow = 'auto';
+    
+    // Cleanup any running animations
+    cleanupAnimations();
 }
 
-// Show activity modal
+// Show activity modal with cleanup
 function showActivity(title, content) {
-    document.getElementById('activity-title').textContent = title;
-    document.getElementById('activity-content').innerHTML = content;
-    document.getElementById('activity-area').classList.remove('hidden');
+    // Cleanup previous animations before showing new content
+    cleanupAnimations();
+    
+    const titleElement = document.getElementById('activity-title');
+    const contentElement = document.getElementById('activity-content');
+    const activityArea = document.getElementById('activity-area');
+    
+    if (titleElement) titleElement.textContent = title;
+    if (contentElement) contentElement.innerHTML = content;
+    if (activityArea) activityArea.classList.remove('hidden');
+    
     document.body.style.overflow = 'hidden';
 }
 
@@ -460,25 +564,43 @@ function solvePuzzle(type) {
     awardPoints(15, 'tech');
 }
 
-// Canvas Implementations
+// Canvas Implementations with proper cleanup
 function initPendulum() {
     const canvas = document.getElementById('sim-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     let angle = Math.PI / 4;
     let angleVelocity = 0;
     let angleAcceleration = 0;
-    let length = 200;
-    let gravity = 0.5;
+    const length = 200;
+    const gravity = 0.5;
     let isRunning = false;
     
-    window.startPendulum = () => { isRunning = true; animate(); };
-    window.stopPendulum = () => { isRunning = false; };
-    window.resetPendulum = () => { angle = Math.PI / 4; angleVelocity = 0; };
+    window.startPendulum = () => { 
+        isRunning = true; 
+        animate(); 
+    };
+    
+    window.stopPendulum = () => { 
+        isRunning = false;
+        if (activeAnimations.pendulum) {
+            cancelAnimationFrame(activeAnimations.pendulum);
+            activeAnimations.pendulum = null;
+        }
+    };
+    
+    window.resetPendulum = () => { 
+        angle = Math.PI / 4; 
+        angleVelocity = 0;
+        if (!isRunning) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    };
     
     function animate() {
-        if (!isRunning) return;
+        if (!isRunning || !canvas) return;
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
@@ -504,7 +626,7 @@ function initPendulum() {
         ctx.fillStyle = '#4a90e2';
         ctx.fill();
         
-        requestAnimationFrame(animate);
+        activeAnimations.pendulum = requestAnimationFrame(animate);
     }
 }
 
@@ -567,17 +689,23 @@ function initWave() {
     const canvas = document.getElementById('sim-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     let frequency = 3;
     let amplitude = 50;
     let phase = 0;
+    let isRunning = true;
     
     window.updateWave = () => {
-        frequency = document.getElementById('freq-slider').value;
-        amplitude = document.getElementById('amp-slider').value;
+        const freqSlider = document.getElementById('freq-slider');
+        const ampSlider = document.getElementById('amp-slider');
+        if (freqSlider) frequency = parseFloat(freqSlider.value) || 3;
+        if (ampSlider) amplitude = parseFloat(ampSlider.value) || 50;
     };
     
     function animate() {
+        if (!isRunning || !canvas) return;
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         ctx.beginPath();
@@ -593,9 +721,19 @@ function initWave() {
         ctx.stroke();
         
         phase += 0.05;
-        requestAnimationFrame(animate);
+        activeAnimations.wave = requestAnimationFrame(animate);
     }
+    
     animate();
+    
+    // Cleanup when modal is closed
+    return () => {
+        isRunning = false;
+        if (activeAnimations.wave) {
+            cancelAnimationFrame(activeAnimations.wave);
+            activeAnimations.wave = null;
+        }
+    };
 }
 
 function drawTriangle() {
@@ -673,12 +811,26 @@ function initDrawingCanvas() {
     const canvas = document.getElementById('drawing-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
     
-    canvas.addEventListener('mousedown', () => { isDrawing = true; });
-    canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', (e) => {
+    // Mouse events
+    const startDrawing = (e) => {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+    };
+    
+    const stopDrawing = () => {
+        isDrawing = false;
+        ctx.beginPath();
+    };
+    
+    const draw = (e) => {
         if (!isDrawing) return;
         
         const rect = canvas.getBoundingClientRect();
@@ -687,16 +839,54 @@ function initDrawingCanvas() {
         
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.strokeStyle = '#4a90e2';
         
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
         ctx.lineTo(x, y);
         ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x, y);
+        
+        lastX = x;
+        lastY = y;
+    };
+    
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+    canvas.addEventListener('mousemove', draw);
+    
+    // Touch events for mobile
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup', {});
+        canvas.dispatchEvent(mouseEvent);
     });
     
     window.clearCanvas = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx && canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
     };
     
     window.saveDrawing = () => {
@@ -709,20 +899,29 @@ function initPatterns() {
     const canvas = document.getElementById('sim-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     window.generatePattern = (shape) => {
+        // Validate shape input
+        const validShapes = ['circles', 'squares', 'triangles'];
+        if (!validShapes.includes(shape)) return;
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         const colors = ['#4a90e2', '#7b68ee', '#ff6b6b', '#51cf66', '#FFD700'];
+        const patternCount = 50;
         
-        for (let i = 0; i < 50; i++) {
+        // Use batch rendering for better performance
+        ctx.save();
+        ctx.globalAlpha = 0.6;
+        
+        for (let i = 0; i < patternCount; i++) {
             const x = Math.random() * canvas.width;
             const y = Math.random() * canvas.height;
             const size = Math.random() * 30 + 10;
             const color = colors[Math.floor(Math.random() * colors.length)];
             
             ctx.fillStyle = color;
-            ctx.globalAlpha = 0.6;
             
             if (shape === 'circles') {
                 ctx.beginPath();
@@ -734,12 +933,18 @@ function initPatterns() {
                 ctx.beginPath();
                 ctx.moveTo(x, y);
                 ctx.lineTo(x + size, y);
-                ctx.lineTo(x + size/2, y - size);
+                ctx.lineTo(x + size / 2, y - size);
+                ctx.closePath();
                 ctx.fill();
             }
         }
-        ctx.globalAlpha = 1;
+        
+        ctx.restore();
         awardPoints(15, 'art');
+        
+        if (!gameState.achievements.creativeArtist) {
+            unlockAchievement('creativeArtist', '¡Artista Creativo! 🎨');
+        }
     };
 }
 
@@ -800,7 +1005,88 @@ function initRobot() {
     drawRobot();
 }
 
-// Initialize on load
+// Keyboard navigation for accessibility
+function setupKeyboardNavigation() {
+    document.addEventListener('keydown', (e) => {
+        // ESC key to close modal
+        if (e.key === 'Escape') {
+            const activityArea = document.getElementById('activity-area');
+            if (activityArea && !activityArea.classList.contains('hidden')) {
+                closeActivity();
+            }
+        }
+        
+        // Prevent default space bar scrolling when in modal
+        if (e.key === ' ' && !document.getElementById('activity-area').classList.contains('hidden')) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Debounce utility function for performance
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Throttle utility function for scroll/resize events
+function throttle(func, limit) {
+    let inThrottle;
+    return function executedFunction(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Global error handler
+window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    // Don't break the app for minor errors
+    event.preventDefault();
+});
+
+// Unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+    event.preventDefault();
+});
+
+// Safe function wrapper for error handling
+function safeExecute(func, fallback = null) {
+    try {
+        return func();
+    } catch (error) {
+        console.error('Error in safe execution:', error);
+        return fallback;
+    }
+}
+
+// Initialize on load with error handling
 document.addEventListener('DOMContentLoaded', () => {
-    loadGameState();
+    safeExecute(() => {
+        loadGameState();
+        setupKeyboardNavigation();
+        
+        // Add visibility change handler to pause animations when tab is not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cleanupAnimations();
+            }
+        });
+        
+        // Prefetch critical resources (if needed in future)
+        // This is a hook for future performance improvements
+        
+        console.log('ALEJ Platform initialized successfully');
+    });
 });
