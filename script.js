@@ -195,14 +195,14 @@ function loadChallenge(type) {
         const num2 = Math.floor(Math.random() * 20) + 1;
         const correctAnswer = num1 + num2;
         const wrongAnswer1 = correctAnswer + Math.floor(Math.random() * 5) + 1;
-        const wrongAnswer2 = correctAnswer - Math.floor(Math.random() * 5) - 1;
+        const wrongAnswer2 = Math.max(0, correctAnswer - Math.floor(Math.random() * 5) - 1);
         
         content = `
             <h3>Reto de Álgebra</h3>
             <div class="challenge-box">
                 <p class="challenge-question">¿Cuánto es ${num1} + ${num2}?</p>
                 <div class="answer-options">
-                    <button class="answer-btn" onclick="checkAnswer(this, ${correctAnswer === correctAnswer})">${correctAnswer}</button>
+                    <button class="answer-btn" onclick="checkAnswer(this, true)">${correctAnswer}</button>
                     <button class="answer-btn" onclick="checkAnswer(this, false)">${wrongAnswer1}</button>
                     <button class="answer-btn" onclick="checkAnswer(this, false)">${wrongAnswer2}</button>
                 </div>
@@ -253,7 +253,9 @@ function checkAnswer(button, isCorrect) {
         button.classList.add('correct');
         awardPoints(20, 'science');
         showNotification('¡Correcto! +20 puntos 🎉');
-        unlockAchievement('mathMaster', '¡Maestro Matemático! 📊');
+        if (!gameState.achievements.mathMaster) {
+            unlockAchievement('mathMaster', '¡Maestro Matemático! 📊');
+        }
     } else {
         button.classList.add('incorrect');
         showNotification('Intenta de nuevo 💪');
