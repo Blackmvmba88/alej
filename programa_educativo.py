@@ -24,21 +24,35 @@ class ProgramaEducativo:
     def cargar_progreso(self):
         """Carga el progreso del estudiante desde un archivo"""
         if os.path.exists(self.progreso_file):
-            with open(self.progreso_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(self.progreso_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"\nAdvertencia: No se pudo cargar el archivo de progreso. Comenzando con datos nuevos.")
+                return {}
         return {}
     
     def guardar_progreso(self):
         """Guarda el progreso del estudiante"""
-        with open(self.progreso_file, 'w', encoding='utf-8') as f:
-            json.dump(self.progreso, f, indent=2, ensure_ascii=False)
+        try:
+            with open(self.progreso_file, 'w', encoding='utf-8') as f:
+                json.dump(self.progreso, f, indent=2, ensure_ascii=False)
+        except IOError as e:
+            print(f"\nAdvertencia: No se pudo guardar el progreso. Error: {e}")
     
     def registrar_estudiante(self):
         """Registra o inicia sesión de un estudiante"""
         print("\n=== REGISTRO DE ESTUDIANTE ===")
         nombre = input("Ingresa tu nombre: ").strip()
-        if not nombre:
-            nombre = "Estudiante"
+        
+        # Validar que se ingrese un nombre único
+        while not nombre or (nombre == "Estudiante" and nombre in self.progreso):
+            if not nombre:
+                print("Por favor ingresa un nombre válido.")
+                nombre = input("Ingresa tu nombre: ").strip()
+            elif nombre == "Estudiante" and nombre in self.progreso:
+                print("Ya existe un perfil con ese nombre. Por favor usa un nombre diferente.")
+                nombre = input("Ingresa tu nombre: ").strip()
         
         self.estudiante = nombre
         if nombre not in self.progreso:
@@ -201,10 +215,14 @@ sen²(θ) + cos²(θ) = 1
         # Ejercicio 2
         print("\n2. ¿Cuál es el área de un círculo con radio 5 cm? (usa π ≈ 3.14)")
         respuesta = input("Respuesta: ").strip()
-        if respuesta in ["78.5", "78.54", "79"]:
-            print("¡Correcto!")
-            puntos_ganados += 5
-        else:
+        try:
+            respuesta_num = float(respuesta)
+            if 78.0 <= respuesta_num <= 79.0:
+                print("¡Correcto!")
+                puntos_ganados += 5
+            else:
+                print("Incorrecto. A = π × 5² = 3.14 × 25 = 78.5 cm²")
+        except ValueError:
             print("Incorrecto. A = π × 5² = 3.14 × 25 = 78.5 cm²")
         
         # Ejercicio 3
