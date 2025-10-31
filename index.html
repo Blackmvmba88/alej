@@ -18,7 +18,10 @@
                 <li><a href="#ciencias">Ciencias</a></li>
                 <li><a href="#arte">Arte</a></li>
                 <li><a href="#tecnologia">Tecnología</a></li>
+                <li><a href="#" onclick="showCareerDashboard(); return false;">Carreras</a></li>
+                <li><a href="#" onclick="openEncyclopedia('science', 'beginner'); return false;">Enciclopedia</a></li>
                 <li><a href="#profile">Mi Perfil</a></li>
+                <li><a href="#" onclick="showThemeSelector(); return false;">🎨 Temas</a></li>
             </ul>
         </nav>
     </header>
@@ -29,7 +32,10 @@
             <div class="hero-content">
                 <h2>Impulsa tu Creatividad y Pensamiento Crítico</h2>
                 <p>Plataforma educativa gamificada para aprender física, matemáticas, arte y tecnología</p>
-                <button class="cta-button" onclick="scrollToModules()">Comenzar a Aprender</button>
+                <div class="cta-buttons">
+                    <button class="cta-button" onclick="scrollToModules()">Comenzar a Aprender</button>
+                    <button class="cta-button secondary" onclick="startPersonalityAssessment()">Descubre tu Perfil</button>
+                </div>
             </div>
             <div class="stats-bar" role="status" aria-live="polite">
                 <div class="stat">

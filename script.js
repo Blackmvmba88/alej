@@ -1,4 +1,4 @@
-// Game State Management
+// Game State Management with Advanced Features
 let gameState = {
     points: 0,
     level: 1,
@@ -11,7 +11,18 @@ let gameState = {
         creativeArtist: false,
         initialProgrammer: false,
         mathMaster: false
-    }
+    },
+    // Advanced features
+    personality: {
+        type: null, // 'analytical', 'creative', 'practical', 'social'
+        musicPreference: null, // 'classical', 'rock', 'electronic', 'pop', 'jazz'
+        learningStyle: null // 'visual', 'auditory', 'kinesthetic', 'reading'
+    },
+    theme: 'blue', // 'blue', 'pink', 'red', 'black', 'green', 'purple'
+    careerPath: null, // Selected career interest
+    advancedLevel: 1, // 1-10 for advanced content progression
+    specializations: [], // Array of chosen specializations
+    completedTopics: [] // Track encyclopedia topics completed
 };
 
 // Animation tracking for cleanup
@@ -19,6 +30,203 @@ let activeAnimations = {
     pendulum: null,
     projectile: null,
     wave: null
+};
+
+// Career Paths Database
+const careerPaths = {
+    science: {
+        physicist: {
+            name: 'Físico/a',
+            description: 'Estudia las leyes fundamentales del universo, desde partículas subatómicas hasta galaxias',
+            skills: ['Matemáticas avanzadas', 'Pensamiento analítico', 'Experimentación'],
+            education: 'Licenciatura en Física (4-5 años) + Maestría/Doctorado (2-5 años)',
+            salary: '$40,000 - $120,000 USD/año',
+            areas: ['Física Teórica', 'Astrofísica', 'Física de Partículas', 'Física Cuántica']
+        },
+        mathematician: {
+            name: 'Matemático/a',
+            description: 'Desarrolla teorías matemáticas y aplica modelos para resolver problemas complejos',
+            skills: ['Lógica abstracta', 'Análisis', 'Programación'],
+            education: 'Licenciatura en Matemáticas (4 años) + Posgrado (2-5 años)',
+            salary: '$50,000 - $130,000 USD/año',
+            areas: ['Matemáticas Puras', 'Matemáticas Aplicadas', 'Estadística', 'Criptografía']
+        },
+        biologist: {
+            name: 'Biólogo/a',
+            description: 'Estudia organismos vivos y su relación con el ambiente',
+            skills: ['Observación', 'Análisis de datos', 'Laboratorio'],
+            education: 'Licenciatura en Biología (4 años) + Especialización',
+            salary: '$35,000 - $100,000 USD/año',
+            areas: ['Genética', 'Ecología', 'Biotecnología', 'Microbiología']
+        },
+        chemist: {
+            name: 'Químico/a',
+            description: 'Analiza sustancias y crea nuevos compuestos y materiales',
+            skills: ['Experimentación', 'Análisis químico', 'Seguridad'],
+            education: 'Licenciatura en Química (4-5 años)',
+            salary: '$40,000 - $110,000 USD/año',
+            areas: ['Química Orgánica', 'Bioquímica', 'Química Industrial', 'Nanotecnología']
+        }
+    },
+    technology: {
+        softwareEngineer: {
+            name: 'Ingeniero/a de Software',
+            description: 'Diseña, desarrolla y mantiene aplicaciones y sistemas de software',
+            skills: ['Programación', 'Resolución de problemas', 'Trabajo en equipo'],
+            education: 'Licenciatura en Ingeniería de Software/CS (4 años)',
+            salary: '$60,000 - $180,000 USD/año',
+            areas: ['Desarrollo Web', 'Apps Móviles', 'IA/ML', 'Ciberseguridad']
+        },
+        dataScientist: {
+            name: 'Científico/a de Datos',
+            description: 'Analiza grandes volúmenes de datos para obtener insights valiosos',
+            skills: ['Estadística', 'Python/R', 'Machine Learning', 'Visualización'],
+            education: 'Licenciatura en CS/Matemáticas/Estadística + Maestría',
+            salary: '$70,000 - $160,000 USD/año',
+            areas: ['Big Data', 'IA', 'Business Intelligence', 'Analítica Predictiva']
+        },
+        roboticist: {
+            name: 'Ingeniero/a en Robótica',
+            description: 'Diseña y programa robots y sistemas automatizados',
+            skills: ['Mecatrónica', 'Programación', 'Electrónica'],
+            education: 'Ingeniería Mecatrónica/Robótica (4-5 años)',
+            salary: '$55,000 - $140,000 USD/año',
+            areas: ['Robótica Industrial', 'IA', 'Automatización', 'Drones']
+        },
+        cyberSecurity: {
+            name: 'Especialista en Ciberseguridad',
+            description: 'Protege sistemas y redes contra amenazas digitales',
+            skills: ['Seguridad de redes', 'Hacking ético', 'Criptografía'],
+            education: 'Licenciatura en CS/Ciberseguridad + Certificaciones',
+            salary: '$65,000 - $150,000 USD/año',
+            areas: ['Pentesting', 'Forense Digital', 'Seguridad Cloud', 'SOC']
+        }
+    },
+    art: {
+        digitalArtist: {
+            name: 'Artista Digital',
+            description: 'Crea arte usando herramientas digitales y tecnología',
+            skills: ['Software de diseño', 'Creatividad', 'Composición'],
+            education: 'Licenciatura en Arte Digital/Diseño (4 años)',
+            salary: '$35,000 - $100,000 USD/año',
+            areas: ['Ilustración', 'Animación', 'Concept Art', 'NFTs']
+        },
+        musicProducer: {
+            name: 'Productor/a Musical',
+            description: 'Crea, graba y produce música usando tecnología',
+            skills: ['Teoría musical', 'DAW', 'Mezcla y masterización'],
+            education: 'Producción Musical/Audio (2-4 años)',
+            salary: '$30,000 - $150,000 USD/año',
+            areas: ['Producción', 'Ingeniería de Audio', 'Composición', 'Sound Design']
+        },
+        uxDesigner: {
+            name: 'Diseñador/a UX/UI',
+            description: 'Diseña experiencias de usuario intuitivas y atractivas',
+            skills: ['Design thinking', 'Prototipado', 'Psicología del usuario'],
+            education: 'Diseño Gráfico/UX (3-4 años)',
+            salary: '$50,000 - $130,000 USD/año',
+            areas: ['UX Research', 'UI Design', 'Prototipado', 'Usabilidad']
+        },
+        gameDesigner: {
+            name: 'Diseñador/a de Videojuegos',
+            description: 'Crea mecánicas, narrativas y experiencias de juego',
+            skills: ['Game engines', 'Narrativa', 'Programación'],
+            education: 'Diseño de Videojuegos/CS (4 años)',
+            salary: '$45,000 - $120,000 USD/año',
+            areas: ['Game Design', 'Level Design', 'Narrativa', 'Game Art']
+        }
+    }
+};
+
+// Encyclopedia Content - Advanced Topics by Level
+const encyclopediaContent = {
+    science: {
+        beginner: [
+            { id: 'gravity', title: 'Gravedad', content: 'La fuerza que atrae objetos con masa...', level: 1 },
+            { id: 'atoms', title: 'Átomos', content: 'Partículas fundamentales de la materia...', level: 1 },
+            { id: 'energy', title: 'Energía', content: 'Capacidad de realizar trabajo...', level: 1 }
+        ],
+        intermediate: [
+            { id: 'quantum', title: 'Mecánica Cuántica', content: 'Comportamiento de partículas subatómicas...', level: 5 },
+            { id: 'relativity', title: 'Relatividad', content: 'Teoría de Einstein sobre espacio-tiempo...', level: 5 },
+            { id: 'thermodynamics', title: 'Termodinámica', content: 'Leyes que gobiernan energía y calor...', level: 4 }
+        ],
+        advanced: [
+            { id: 'string-theory', title: 'Teoría de Cuerdas', content: 'Modelo teórico que unifica física...', level: 8 },
+            { id: 'dark-matter', title: 'Materia Oscura', content: 'Materia no detectable directamente...', level: 7 },
+            { id: 'cosmology', title: 'Cosmología Avanzada', content: 'Origen y evolución del universo...', level: 9 }
+        ]
+    },
+    technology: {
+        beginner: [
+            { id: 'algorithms', title: 'Algoritmos Básicos', content: 'Secuencias de instrucciones...', level: 1 },
+            { id: 'data-structures', title: 'Estructuras de Datos', content: 'Arrays, listas, árboles...', level: 2 }
+        ],
+        intermediate: [
+            { id: 'ai-ml', title: 'Inteligencia Artificial', content: 'Sistemas que aprenden y razonan...', level: 5 },
+            { id: 'blockchain', title: 'Blockchain', content: 'Tecnología de registro distribuido...', level: 6 }
+        ],
+        advanced: [
+            { id: 'quantum-computing', title: 'Computación Cuántica', content: 'Computación usando qubits...', level: 9 },
+            { id: 'neural-networks', title: 'Redes Neuronales Profundas', content: 'Arquitecturas avanzadas de DL...', level: 8 }
+        ]
+    },
+    art: {
+        beginner: [
+            { id: 'color-theory', title: 'Teoría del Color', content: 'Círculo cromático y armonías...', level: 1 },
+            { id: 'composition', title: 'Composición', content: 'Reglas de tercios, balance...', level: 1 }
+        ],
+        intermediate: [
+            { id: 'digital-painting', title: 'Pintura Digital Avanzada', content: 'Técnicas profesionales...', level: 5 },
+            { id: 'animation', title: 'Animación 2D/3D', content: 'Principios de animación...', level: 6 }
+        ],
+        advanced: [
+            { id: 'procedural-art', title: 'Arte Procedural', content: 'Generación algorítmica de arte...', level: 8 },
+            { id: 'vr-art', title: 'Arte en Realidad Virtual', content: 'Creación artística inmersiva...', level: 9 }
+        ]
+    }
+};
+
+// Personality Assessment Questions
+const personalityQuestions = {
+    musicPreference: {
+        question: '¿Qué tipo de música prefieres?',
+        options: [
+            { value: 'classical', label: '🎻 Clásica', personality: 'analytical' },
+            { value: 'rock', label: '🎸 Rock', personality: 'creative' },
+            { value: 'electronic', label: '🎹 Electrónica', personality: 'practical' },
+            { value: 'pop', label: '🎤 Pop', personality: 'social' },
+            { value: 'jazz', label: '🎺 Jazz', personality: 'creative' }
+        ]
+    },
+    learningStyle: {
+        question: '¿Cómo prefieres aprender?',
+        options: [
+            { value: 'visual', label: '👁️ Viendo diagramas y videos', personality: 'analytical' },
+            { value: 'auditory', label: '👂 Escuchando explicaciones', personality: 'social' },
+            { value: 'kinesthetic', label: '✋ Haciendo experimentos', personality: 'practical' },
+            { value: 'reading', label: '📚 Leyendo textos', personality: 'analytical' }
+        ]
+    },
+    problemSolving: {
+        question: '¿Cómo resuelves problemas?',
+        options: [
+            { value: 'logical', label: '🧮 Paso a paso lógicamente', personality: 'analytical' },
+            { value: 'creative', label: '🎨 Pensando creativamente', personality: 'creative' },
+            { value: 'practical', label: '🔧 Probando soluciones', personality: 'practical' },
+            { value: 'collaborative', label: '👥 Consultando con otros', personality: 'social' }
+        ]
+    }
+};
+
+// Theme Configurations
+const themes = {
+    blue: { primary: '#4a90e2', secondary: '#7b68ee', name: 'Azul Océano' },
+    pink: { primary: '#ff6b9d', secondary: '#c44569', name: 'Rosa Vibrante' },
+    red: { primary: '#e74c3c', secondary: '#c0392b', name: 'Rojo Pasión' },
+    black: { primary: '#2c3e50', secondary: '#34495e', name: 'Negro Elegante' },
+    green: { primary: '#27ae60', secondary: '#2ecc71', name: 'Verde Naturaleza' },
+    purple: { primary: '#8e44ad', secondary: '#9b59b6', name: 'Púrpura Real' }
 };
 
 // Cleanup function for animations
@@ -1071,11 +1279,415 @@ function safeExecute(func, fallback = null) {
     }
 }
 
+// ============= ADVANCED FEATURES =============
+
+// Personality Assessment
+function startPersonalityAssessment() {
+    const content = `
+        <h3>Descubre tu Perfil de Aprendizaje</h3>
+        <p>Responde estas preguntas para personalizar tu experiencia educativa</p>
+        <div id="personality-quiz" class="personality-quiz">
+            <div class="quiz-question">
+                <h4>${personalityQuestions.musicPreference.question}</h4>
+                <div class="quiz-options">
+                    ${personalityQuestions.musicPreference.options.map(opt => `
+                        <button class="quiz-option-btn" onclick="answerPersonalityQuestion('musicPreference', '${opt.value}', '${opt.personality}')">
+                            ${opt.label}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    showActivity('Test de Personalidad', content);
+}
+
+function answerPersonalityQuestion(questionType, value, personality) {
+    gameState.personality[questionType] = value;
+    
+    // Determine personality type based on answers
+    const personalityScores = { analytical: 0, creative: 0, practical: 0, social: 0 };
+    Object.values(gameState.personality).forEach(pref => {
+        if (pref) personalityScores[pref]++;
+    });
+    
+    const dominantPersonality = Object.keys(personalityScores).reduce((a, b) => 
+        personalityScores[a] > personalityScores[b] ? a : b
+    );
+    gameState.personality.type = dominantPersonality;
+    
+    // Show next question or results
+    if (!gameState.personality.learningStyle) {
+        showLearningStyleQuestion();
+    } else if (!gameState.personality.problemSolving) {
+        showProblemSolvingQuestion();
+    } else {
+        showPersonalityResults();
+    }
+    
+    saveGameState();
+}
+
+function showLearningStyleQuestion() {
+    const content = `
+        <h3>Tu Estilo de Aprendizaje</h3>
+        <div class="quiz-question">
+            <h4>${personalityQuestions.learningStyle.question}</h4>
+            <div class="quiz-options">
+                ${personalityQuestions.learningStyle.options.map(opt => `
+                    <button class="quiz-option-btn" onclick="answerPersonalityQuestion('learningStyle', '${opt.value}', '${opt.personality}')">
+                        ${opt.label}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+}
+
+function showProblemSolvingQuestion() {
+    const content = `
+        <h3>Resolución de Problemas</h3>
+        <div class="quiz-question">
+            <h4>${personalityQuestions.problemSolving.question}</h4>
+            <div class="quiz-options">
+                ${personalityQuestions.problemSolving.options.map(opt => `
+                    <button class="quiz-option-btn" onclick="answerPersonalityQuestion('problemSolving', '${opt.value}', '${opt.personality}')">
+                        ${opt.label}
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+}
+
+function showPersonalityResults() {
+    const personalityType = gameState.personality.type;
+    const descriptions = {
+        analytical: {
+            title: '🧮 Perfil Analítico',
+            desc: 'Te gusta el razonamiento lógico y resolver problemas paso a paso. Carreras recomendadas: Física, Matemáticas, Ingeniería.',
+            careers: ['physicist', 'mathematician', 'dataScientist']
+        },
+        creative: {
+            title: '🎨 Perfil Creativo',
+            desc: 'Prefieres expresarte artísticamente y pensar fuera de la caja. Carreras recomendadas: Diseño, Música, Arte Digital.',
+            careers: ['digitalArtist', 'musicProducer', 'gameDesigner']
+        },
+        practical: {
+            title: '🔧 Perfil Práctico',
+            desc: 'Aprendes mejor haciendo y experimentando. Carreras recomendadas: Robótica, Ingeniería, Desarrollo.',
+            careers: ['roboticist', 'softwareEngineer', 'cyberSecurity']
+        },
+        social: {
+            title: '👥 Perfil Social',
+            desc: 'Te gusta trabajar en equipo y comunicarte. Carreras recomendadas: UX Design, Enseñanza, Gestión de Proyectos.',
+            careers: ['uxDesigner', 'gameDesigner', 'softwareEngineer']
+        }
+    };
+    
+    const profile = descriptions[personalityType];
+    
+    // Helper function to find career
+    const findCareer = (careerKey) => {
+        for (const category of Object.values(careerPaths)) {
+            if (category[careerKey]) {
+                return category[careerKey];
+            }
+        }
+        return null;
+    };
+    
+    const content = `
+        <h3>Tu Perfil: ${profile.title}</h3>
+        <p class="personality-description">${profile.desc}</p>
+        <div class="career-recommendations">
+            <h4>Carreras Sugeridas:</h4>
+            <div class="career-cards">
+                ${profile.careers.map(careerKey => {
+                    const career = findCareer(careerKey);
+                    return career ? `
+                        <div class="mini-career-card" onclick="exploreCareer('${careerKey}')">
+                            <h5>${career.name}</h5>
+                            <p>${career.description.substring(0, 60)}...</p>
+                        </div>
+                    ` : '';
+                }).join('')}
+            </div>
+        </div>
+        <button class="control-btn success" onclick="closeActivity()">¡Comenzar a Aprender!</button>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+    awardPoints(50, 'science');
+}
+
+// Theme Switching
+function changeTheme(themeName) {
+    if (!themes[themeName]) return;
+    
+    gameState.theme = themeName;
+    const theme = themes[themeName];
+    
+    // Apply theme to CSS variables
+    document.documentElement.style.setProperty('--primary-color', theme.primary);
+    document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+    
+    saveGameState();
+    showNotification(`Tema cambiado a: ${theme.name}`);
+}
+
+// Theme Selector
+function showThemeSelector() {
+    const content = `
+        <h3>Personaliza tu Tema</h3>
+        <p>Elige el color que mejor represente tu personalidad</p>
+        <div class="theme-grid">
+            ${Object.entries(themes).map(([key, theme]) => `
+                <div class="theme-option ${gameState.theme === key ? 'selected' : ''}" 
+                     onclick="changeTheme('${key}')"
+                     style="background: linear-gradient(135deg, ${theme.primary}, ${theme.secondary})">
+                    <span class="theme-name">${theme.name}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    showActivity('Temas', content);
+}
+
+// Career Explorer
+function exploreCareer(careerKey) {
+    // Find career in all categories
+    let career = null;
+    let category = null;
+    
+    for (const [cat, careers] of Object.entries(careerPaths)) {
+        if (careers[careerKey]) {
+            career = careers[careerKey];
+            category = cat;
+            break;
+        }
+    }
+    
+    if (!career) return;
+    
+    const content = `
+        <h3>${career.name}</h3>
+        <div class="career-detail">
+            <p class="career-description">${career.description}</p>
+            
+            <div class="career-section">
+                <h4>💼 Habilidades Necesarias</h4>
+                <ul>
+                    ${career.skills.map(skill => `<li>${skill}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="career-section">
+                <h4>🎓 Educación Requerida</h4>
+                <p>${career.education}</p>
+            </div>
+            
+            <div class="career-section">
+                <h4>💰 Rango Salarial</h4>
+                <p>${career.salary}</p>
+            </div>
+            
+            <div class="career-section">
+                <h4>🌟 Áreas de Especialización</h4>
+                <div class="specialization-tags">
+                    ${career.areas.map(area => `
+                        <span class="spec-tag" onclick="exploreSpecialization('${careerKey}', '${area}')">${area}</span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <button class="control-btn success" onclick="setCareerGoal('${careerKey}')">
+                Establecer como Meta
+            </button>
+        </div>
+    `;
+    showActivity('Explorar Carrera', content);
+}
+
+function setCareerGoal(careerKey) {
+    gameState.careerPath = careerKey;
+    saveGameState();
+    showNotification('¡Meta profesional establecida! 🎯');
+    awardPoints(30, 'science');
+}
+
+function exploreSpecialization(careerKey, specialization) {
+    const content = `
+        <h3>${specialization}</h3>
+        <p>Especialización dentro de ${careerKey}</p>
+        <div class="challenge-box">
+            <p>Para dominar esta especialización, necesitarás:</p>
+            <ul>
+                <li>Completar temas avanzados relacionados</li>
+                <li>Realizar proyectos prácticos</li>
+                <li>Alcanzar nivel avanzado 5+</li>
+            </ul>
+        </div>
+        <button class="control-btn" onclick="addSpecialization('${specialization}')">
+            Añadir a mis Especializaciones
+        </button>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+}
+
+function addSpecialization(spec) {
+    if (!gameState.specializations.includes(spec)) {
+        gameState.specializations.push(spec);
+        saveGameState();
+        showNotification(`Especialización añadida: ${spec}`);
+        awardPoints(20, 'tech');
+    }
+}
+
+// Encyclopedia Navigator
+function openEncyclopedia(category, level = 'beginner') {
+    const topics = encyclopediaContent[category][level];
+    
+    const content = `
+        <h3>📚 Enciclopedia ALEJ - ${category.toUpperCase()}</h3>
+        <div class="level-selector">
+            <button class="level-btn ${level === 'beginner' ? 'active' : ''}" 
+                    onclick="openEncyclopedia('${category}', 'beginner')">
+                Básico (1-3)
+            </button>
+            <button class="level-btn ${level === 'intermediate' ? 'active' : ''}" 
+                    onclick="openEncyclopedia('${category}', 'intermediate')">
+                Intermedio (4-6)
+            </button>
+            <button class="level-btn ${level === 'advanced' ? 'active' : ''}" 
+                    onclick="openEncyclopedia('${category}', 'advanced')">
+                Avanzado (7-10)
+            </button>
+        </div>
+        <div class="encyclopedia-topics">
+            ${topics.map(topic => `
+                <div class="encyclopedia-card ${gameState.completedTopics.includes(topic.id) ? 'completed' : ''}"
+                     onclick="viewEncyclopediaTopic('${topic.id}', '${category}', '${level}')">
+                    <div class="topic-header">
+                        <h4>${topic.title}</h4>
+                        <span class="topic-level">Nivel ${topic.level}</span>
+                    </div>
+                    <p>${topic.content.substring(0, 80)}...</p>
+                    ${gameState.completedTopics.includes(topic.id) ? '<span class="completed-badge">✓ Completado</span>' : ''}
+                </div>
+            `).join('')}
+        </div>
+    `;
+    showActivity('Enciclopedia', content);
+}
+
+function viewEncyclopediaTopic(topicId, category, level) {
+    const topics = encyclopediaContent[category][level];
+    const topic = topics.find(t => t.id === topicId);
+    
+    if (!topic) return;
+    
+    const content = `
+        <h3>${topic.title}</h3>
+        <span class="topic-level-badge">Nivel ${topic.level}</span>
+        <div class="encyclopedia-content">
+            <p>${topic.content}</p>
+            <div class="challenge-box">
+                <h4>📖 Aprende más sobre este tema</h4>
+                <p>Este es un tema de nivel ${topic.level}. Completa actividades relacionadas para dominar este concepto.</p>
+            </div>
+        </div>
+        <button class="control-btn success" onclick="markTopicCompleted('${topicId}')">
+            Marcar como Completado
+        </button>
+        <button class="control-btn" onclick="openEncyclopedia('${category}', '${level}')">
+            Volver a Temas
+        </button>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+}
+
+function markTopicCompleted(topicId) {
+    if (!gameState.completedTopics.includes(topicId)) {
+        gameState.completedTopics.push(topicId);
+        gameState.advancedLevel = Math.min(10, Math.floor(gameState.completedTopics.length / 3) + 1);
+        saveGameState();
+        awardPoints(25, 'science');
+        showNotification('¡Tema completado! 📚');
+    }
+}
+
+// Career Dashboard
+function showCareerDashboard() {
+    const content = `
+        <h3>🎯 Panel de Carreras</h3>
+        <p>Explora carreras en Ciencias, Tecnología y Arte</p>
+        
+        <div class="career-categories">
+            <div class="career-category" onclick="showCareerCategory('science')">
+                <h4>🔬 Ciencias</h4>
+                <p>Física, Matemáticas, Biología, Química</p>
+            </div>
+            <div class="career-category" onclick="showCareerCategory('technology')">
+                <h4>💻 Tecnología</h4>
+                <p>Software, Datos, Robótica, Ciberseguridad</p>
+            </div>
+            <div class="career-category" onclick="showCareerCategory('art')">
+                <h4>🎨 Arte y Diseño</h4>
+                <p>Arte Digital, Música, UX, Videojuegos</p>
+            </div>
+        </div>
+        
+        ${gameState.careerPath ? `
+            <div class="current-goal">
+                <h4>Tu Meta Actual:</h4>
+                <p>${gameState.careerPath}</p>
+            </div>
+        ` : ''}
+    `;
+    showActivity('Carreras', content);
+}
+
+function showCareerCategory(category) {
+    const careers = careerPaths[category];
+    const content = `
+        <h3>${category === 'science' ? '🔬 Ciencias' : category === 'technology' ? '💻 Tecnología' : '🎨 Arte'}</h3>
+        <div class="careers-grid">
+            ${Object.entries(careers).map(([key, career]) => `
+                <div class="career-card" onclick="exploreCareer('${key}')">
+                    <h4>${career.name}</h4>
+                    <p>${career.description}</p>
+                    <span class="salary-badge">${career.salary}</span>
+                </div>
+            `).join('')}
+        </div>
+        <button class="control-btn" onclick="showCareerDashboard()">Volver</button>
+    `;
+    document.getElementById('activity-content').innerHTML = content;
+}
+
 // Initialize on load with error handling
 document.addEventListener('DOMContentLoaded', () => {
     safeExecute(() => {
         loadGameState();
         setupKeyboardNavigation();
+        
+        // Apply saved theme
+        if (gameState.theme && themes[gameState.theme]) {
+            const theme = themes[gameState.theme];
+            document.documentElement.style.setProperty('--primary-color', theme.primary);
+            document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+        }
+        
+        // Show personality assessment if not completed
+        if (!gameState.personality.type) {
+            setTimeout(() => {
+                if (confirm('¿Quieres descubrir tu perfil de aprendizaje personalizado?')) {
+                    startPersonalityAssessment();
+                }
+            }, 2000);
+        }
         
         // Add visibility change handler to pause animations when tab is not visible
         document.addEventListener('visibilitychange', () => {
@@ -1088,5 +1700,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // This is a hook for future performance improvements
         
         console.log('ALEJ Platform initialized successfully');
+        console.log('Personality Type:', gameState.personality.type || 'Not set');
+        console.log('Theme:', gameState.theme);
+        console.log('Advanced Level:', gameState.advancedLevel);
     });
 });
