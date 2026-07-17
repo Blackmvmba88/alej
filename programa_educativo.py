@@ -28,7 +28,7 @@ class ProgramaEducativo:
                 with open(self.progreso_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
             except (json.JSONDecodeError, IOError) as e:
-                print(f"\nAdvertencia: No se pudo cargar el archivo de progreso. Comenzando con datos nuevos.")
+                print(f"\nAdvertencia: No se pudo cargar el archivo de progreso. Error: {e}. Comenzando con datos nuevos.")
                 return {}
         return {}
     
@@ -45,14 +45,10 @@ class ProgramaEducativo:
         print("\n=== REGISTRO DE ESTUDIANTE ===")
         nombre = input("Ingresa tu nombre: ").strip()
         
-        # Validar que se ingrese un nombre único
-        while not nombre or (nombre == "Estudiante" and nombre in self.progreso):
-            if not nombre:
-                print("Por favor ingresa un nombre válido.")
-                nombre = input("Ingresa tu nombre: ").strip()
-            elif nombre == "Estudiante" and nombre in self.progreso:
-                print("Ya existe un perfil con ese nombre. Por favor usa un nombre diferente.")
-                nombre = input("Ingresa tu nombre: ").strip()
+        # Validar el nombre; si el perfil ya existe, se inicia sesión en él.
+        while not nombre:
+            print("Por favor ingresa un nombre válido.")
+            nombre = input("Ingresa tu nombre: ").strip()
         
         self.estudiante = nombre
         if nombre not in self.progreso:
@@ -133,8 +129,7 @@ Ejemplo: 2x + 5 = 13
         
         if respuesta.strip() == "5":
             print("¡Correcto! 3x + 7 = 22 → 3x = 15 → x = 5")
-            self.agregar_puntos("matematicas", 10)
-            self.marcar_leccion_completada("matematicas", "algebra_ecuaciones")
+            self.completar_actividad("matematicas", "algebra_ecuaciones", 10)
         else:
             print(f"Incorrecto. La respuesta correcta es x = 5")
             print("Recuerda: 3x + 7 = 22 → 3x = 22 - 7 → 3x = 15 → x = 5")
@@ -162,8 +157,7 @@ Volúmenes:
         
         if respuesta.strip() == "36":
             print("¡Excelente! A = 6² = 36 cm²")
-            self.agregar_puntos("matematicas", 10)
-            self.marcar_leccion_completada("matematicas", "geometria_areas")
+            self.completar_actividad("matematicas", "geometria_areas", 10)
         else:
             print("Incorrecto. El área es 36 cm² (6 × 6 = 36)")
     
@@ -194,8 +188,7 @@ sen²(θ) + cos²(θ) = 1
         
         if respuesta == "a":
             print("¡Correcto! sen(30°) = 0.5 o 1/2")
-            self.agregar_puntos("matematicas", 10)
-            self.marcar_leccion_completada("matematicas", "trigonometria_basica")
+            self.completar_actividad("matematicas", "trigonometria_basica", 10)
         else:
             print("Incorrecto. La respuesta correcta es a) 0.5")
     
@@ -233,7 +226,7 @@ sen²(θ) + cos²(θ) = 1
         else:
             print("Incorrecto. A = (8 × 6) / 2 = 24 cm²")
         
-        self.agregar_puntos("matematicas", puntos_ganados)
+        self.completar_actividad("matematicas", "ejercicios_matematicas", puntos_ganados)
         print(f"\n¡Ejercicios completados! Ganaste {puntos_ganados} puntos.")
     
     def ciencias(self):
@@ -288,8 +281,7 @@ Ejemplo: Si empujas una pared con 10 N, la pared te empuja con 10 N.
         
         if respuesta == "10":
             print("¡Correcto! F = 5 kg × 2 m/s² = 10 N")
-            self.agregar_puntos("ciencias", 10)
-            self.marcar_leccion_completada("ciencias", "fisica_newton")
+            self.completar_actividad("ciencias", "fisica_newton", 10)
         else:
             print("Incorrecto. F = 5 × 2 = 10 N")
     
@@ -319,8 +311,7 @@ Estructura atómica:
         
         if respuesta == "O":
             print("¡Correcto! El oxígeno se representa con la letra O")
-            self.agregar_puntos("ciencias", 10)
-            self.marcar_leccion_completada("ciencias", "quimica_tabla")
+            self.completar_actividad("ciencias", "quimica_tabla", 10)
         else:
             print("Incorrecto. El símbolo del Oxígeno es O")
     
@@ -357,8 +348,7 @@ En plantas también:
         
         if respuesta == "b":
             print("¡Correcto! La mitocondria produce energía para la célula")
-            self.agregar_puntos("ciencias", 10)
-            self.marcar_leccion_completada("ciencias", "biologia_celula")
+            self.completar_actividad("ciencias", "biologia_celula", 10)
         else:
             print("Incorrecto. La respuesta correcta es b) Mitocondria")
     
@@ -392,7 +382,7 @@ En plantas también:
         else:
             print("Incorrecto. Es aproximadamente 300,000 km/s")
         
-        self.agregar_puntos("ciencias", puntos_ganados)
+        self.completar_actividad("ciencias", "quiz_ciencias", puntos_ganados)
         print(f"\n¡Quiz completado! Ganaste {puntos_ganados} puntos.")
     
     def literatura(self):
@@ -450,8 +440,7 @@ Los tres grandes géneros literarios:
         
         if respuesta == "b":
             print("¡Correcto! La novela es un género narrativo")
-            self.agregar_puntos("literatura", 10)
-            self.marcar_leccion_completada("literatura", "generos_literarios")
+            self.completar_actividad("literatura", "generos_literarios", 10)
         else:
             print("Incorrecto. La novela pertenece al género narrativo")
     
@@ -485,8 +474,7 @@ ALITERACIÓN: Repetición de sonidos
         
         if respuesta == "b":
             print("¡Correcto! Es una metáfora porque compara implícitamente")
-            self.agregar_puntos("literatura", 10)
-            self.marcar_leccion_completada("literatura", "figuras_retoricas")
+            self.completar_actividad("literatura", "figuras_retoricas", 10)
         else:
             print("Incorrecto. Es una metáfora")
     
@@ -509,8 +497,7 @@ de luz y calor, haciendo posible la vida en nuestro planeta."
         
         if "fusion" in respuesta or "fusión" in respuesta:
             print("¡Correcto! El Sol produce energía mediante fusión nuclear")
-            self.agregar_puntos("literatura", 10)
-            self.marcar_leccion_completada("literatura", "comprension_lectora")
+            self.completar_actividad("literatura", "comprension_lectora", 10)
         else:
             print("Incorrecto. El Sol usa fusión nuclear para producir energía")
     
@@ -534,7 +521,7 @@ Poesía... eres tú."
         
         if respuesta == "a":
             print("¡Correcto! El poeta usa la metáfora al comparar a la persona con la poesía")
-            self.agregar_puntos("literatura", 10)
+            self.completar_actividad("literatura", "analisis_texto", 10)
         else:
             print("Incorrecto. La figura predominante es la metáfora")
     
@@ -598,8 +585,7 @@ IMPERIO ROMANO (27 a.C. - 476 d.C.):
         
         if "grecia" in respuesta or "griega" in respuesta:
             print("¡Correcto! Los griegos, específicamente Atenas, crearon la democracia")
-            self.agregar_puntos("historia", 10)
-            self.marcar_leccion_completada("historia", "edad_antigua")
+            self.completar_actividad("historia", "edad_antigua", 10)
         else:
             print("Incorrecto. Fue la Grecia Clásica, específicamente Atenas")
     
@@ -633,8 +619,7 @@ SOCIEDAD FEUDAL:
         
         if "feudal" in respuesta:
             print("¡Correcto! El sistema feudal era la estructura de la Edad Media")
-            self.agregar_puntos("historia", 10)
-            self.marcar_leccion_completada("historia", "edad_media")
+            self.completar_actividad("historia", "edad_media", 10)
         else:
             print("Incorrecto. Era el sistema feudal")
     
@@ -670,8 +655,7 @@ EVENTOS IMPORTANTES:
         
         if "1492" in respuesta:
             print("¡Correcto! Colón llegó a América en 1492")
-            self.agregar_puntos("historia", 10)
-            self.marcar_leccion_completada("historia", "edad_moderna")
+            self.completar_actividad("historia", "edad_moderna", 10)
         else:
             print("Incorrecto. Fue en 1492")
     
@@ -707,8 +691,7 @@ INDEPENDENCIAS:
         
         if "inca" in respuesta:
             print("¡Correcto! Los Incas construyeron Machu Picchu")
-            self.agregar_puntos("historia", 10)
-            self.marcar_leccion_completada("historia", "historia_america")
+            self.completar_actividad("historia", "historia_america", 10)
         else:
             print("Incorrecto. Fueron los Incas")
     
@@ -739,7 +722,7 @@ INDEPENDENCIAS:
         else:
             print("Incorrecto. Fue George Washington")
         
-        self.agregar_puntos("historia", puntos_ganados)
+        self.completar_actividad("historia", "quiz_historia", puntos_ganados)
         print(f"\n¡Quiz completado! Ganaste {puntos_ganados} puntos.")
     
     def ver_progreso(self):
@@ -777,6 +760,23 @@ INDEPENDENCIAS:
         print(f"NIVEL: {nivel}")
         print("="*60)
     
+    def completar_actividad(self, materia, actividad_id, puntos):
+        """Registra una actividad y otorga sus puntos una sola vez."""
+        if not self.estudiante or self.estudiante not in self.progreso:
+            return False
+
+        datos_materia = self.progreso[self.estudiante][materia]
+        completadas = datos_materia["lecciones_completadas"]
+        if actividad_id in completadas:
+            print("\n✓ Esta actividad ya estaba completada; no se otorgaron puntos adicionales.")
+            return False
+
+        completadas.append(actividad_id)
+        datos_materia["puntos"] += puntos
+        self.guardar_progreso()
+        print(f"\n✓ Has ganado {puntos} puntos en {materia}!")
+        return True
+
     def agregar_puntos(self, materia, puntos):
         """Agrega puntos a una materia"""
         if self.estudiante in self.progreso:
