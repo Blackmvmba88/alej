@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJ - Plataforma Educativa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>🎓 ALEJ</h1>
+                <p>Aprende, Experimenta, Juega</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#ciencias">Ciencias</a></li>
+                <li><a href="#arte">Arte</a></li>
+                <li><a href="#tecnologia">Tecnología</a></li>
+                <li><a href="#" onclick="showCareerDashboard(); return false;">Carreras</a></li>
+                <li><a href="#" onclick="openEncyclopedia('science', 'beginner'); return false;">Enciclopedia</a></li>
+                <li><a href="#profile">Mi Perfil</a></li>
+                <li><a href="#" onclick="showThemeSelector(); return false;">🎨 Temas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>Impulsa tu Creatividad y Pensamiento Crítico</h2>
+                <p>Plataforma educativa gamificada para aprender física, matemáticas, arte y tecnología</p>
+                <div class="cta-buttons">
+                    <button class="cta-button" onclick="scrollToModules()">Comenzar a Aprender</button>
+                    <button class="cta-button secondary" onclick="startPersonalityAssessment()">Descubre tu Perfil</button>
+                </div>
+            </div>
+            <div class="stats-bar" role="status" aria-live="polite">
+                <div class="stat">
+                    <span class="stat-icon" aria-hidden="true">🏆</span>
+                    <span class="stat-label">Puntos: <span id="total-points" aria-label="Total de puntos">0</span></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon" aria-hidden="true">⭐</span>
+                    <span class="stat-label">Nivel: <span id="user-level" aria-label="Nivel actual">1</span></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon" aria-hidden="true">🎖️</span>
+                    <span class="stat-label">Insignias: <span id="total-badges" aria-label="Total de insignias">0</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo de Ciencias -->
+        <section id="ciencias" class="module">
+            <div class="module-header">
+                <h2>🔬 Módulo de Ciencias</h2>
+                <p>Explora física y matemáticas con experimentos y simulaciones interactivas</p>
+            </div>
+            
+            <div class="content-grid">
+                <!-- Física -->
+                <div class="card">
+                    <div class="card-icon">⚛️</div>
+                    <h3>Física</h3>
+                    <p>Aprende conceptos de mecánica, óptica y electromagnetismo</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="loadSimulation('pendulum')">Péndulo Simple</button>
+                        <button class="topic-btn" onclick="loadSimulation('projectile')">Movimiento Proyectil</button>
+                        <button class="topic-btn" onclick="loadSimulation('waves')">Ondas y Sonido</button>
+                    </div>
+                </div>
+
+                <!-- Matemáticas -->
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h3>Matemáticas</h3>
+                    <p>Resuelve retos de álgebra, geometría y cálculo</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="loadChallenge('algebra')">Retos de Álgebra</button>
+                        <button class="topic-btn" onclick="loadChallenge('geometry')">Geometría Interactiva</button>
+                        <button class="topic-btn" onclick="loadChallenge('calculus')">Cálculo Visual</button>
+                    </div>
+                </div>
+
+                <!-- Experimentos -->
+                <div class="card">
+                    <div class="card-icon">🧪</div>
+                    <h3>Experimentos</h3>
+                    <p>Realiza experimentos virtuales seguros</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="startExperiment('density')">Densidad y Flotación</button>
+                        <button class="topic-btn" onclick="startExperiment('optics')">Óptica y Luz</button>
+                        <button class="topic-btn" onclick="startExperiment('energy')">Conservación de Energía</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo de Arte -->
+        <section id="arte" class="module">
+            <div class="module-header">
+                <h2>🎨 Módulo de Arte</h2>
+                <p>Desarrolla tu creatividad con actividades artísticas interactivas</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon">🖌️</div>
+                    <h3>Dibujo Digital</h3>
+                    <p>Crea obras de arte con herramientas digitales</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="openCanvas('drawing')">Canvas de Dibujo</button>
+                        <button class="topic-btn" onclick="openCanvas('patterns')">Patrones y Formas</button>
+                        <button class="topic-btn" onclick="openCanvas('colors')">Teoría del Color</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎭</div>
+                    <h3>Arte y Cultura</h3>
+                    <p>Explora movimientos artísticos y técnicas</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="exploreArt('renaissance')">Renacimiento</button>
+                        <button class="topic-btn" onclick="exploreArt('modern')">Arte Moderno</button>
+                        <button class="topic-btn" onclick="exploreArt('digital')">Arte Digital</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎵</div>
+                    <h3>Música y Sonido</h3>
+                    <p>Crea composiciones y aprende teoría musical</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="openMusic('composer')">Compositor Virtual</button>
+                        <button class="topic-btn" onclick="openMusic('theory')">Teoría Musical</button>
+                        <button class="topic-btn" onclick="openMusic('rhythm')">Ritmo y Percusión</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo de Tecnología -->
+        <section id="tecnologia" class="module">
+            <div class="module-header">
+                <h2>💻 Módulo de Tecnología</h2>
+                <p>Aprende programación, robótica y pensamiento computacional</p>
+            </div>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-icon">👨‍💻</div>
+                    <h3>Programación</h3>
+                    <p>Aprende a programar con proyectos interactivos</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="startCoding('scratch')">Scratch Visual</button>
+                        <button class="topic-btn" onclick="startCoding('python')">Python Básico</button>
+                        <button class="topic-btn" onclick="startCoding('web')">Desarrollo Web</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3>Robótica</h3>
+                    <p>Simula y programa robots virtuales</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="openRobotics('basic')">Robot Básico</button>
+                        <button class="topic-btn" onclick="openRobotics('sensors')">Sensores y Actuadores</button>
+                        <button class="topic-btn" onclick="openRobotics('ai')">IA y Aprendizaje</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🧩</div>
+                    <h3>Lógica y Algoritmos</h3>
+                    <p>Desarrolla pensamiento computacional</p>
+                    <div class="topics">
+                        <button class="topic-btn" onclick="solvePuzzle('logic')">Puzzles Lógicos</button>
+                        <button class="topic-btn" onclick="solvePuzzle('sorting')">Algoritmos de Ordenamiento</button>
+                        <button class="topic-btn" onclick="solvePuzzle('maze')">Laberintos y Grafos</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Activity Area -->
+        <section id="activity-area" class="activity-area hidden" role="dialog" aria-modal="true" aria-labelledby="activity-title">
+            <div class="activity-header">
+                <h3 id="activity-title">Actividad</h3>
+                <button class="close-btn" onclick="closeActivity()" aria-label="Cerrar actividad">✕</button>
+            </div>
+            <div id="activity-content" class="activity-content">
+                <!-- Dynamic content loaded here -->
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="profile">
+            <h2>Mi Perfil de Aprendizaje</h2>
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <h3>🏆 Logros</h3>
+                    <div id="achievements-list" class="achievements-list">
+                        <div class="achievement locked">
+                            <span class="badge-icon">🔬</span>
+                            <p>Primer Experimento</p>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="badge-icon">🎨</span>
+                            <p>Artista Creativo</p>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="badge-icon">💻</span>
+                            <p>Programador Inicial</p>
+                        </div>
+                        <div class="achievement locked">
+                            <span class="badge-icon">📊</span>
+                            <p>Maestro Matemático</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-card">
+                    <h3>📈 Progreso</h3>
+                    <div class="progress-item">
+                        <label>Ciencias</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="science-progress" style="width: 0%"></div>
+                        </div>
+                        <span id="science-percent">0%</span>
+                    </div>
+                    <div class="progress-item">
+                        <label>Arte</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="art-progress" style="width: 0%"></div>
+                        </div>
+                        <span id="art-percent">0%</span>
+                    </div>
+                    <div class="progress-item">
+                        <label>Tecnología</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="tech-progress" style="width: 0%"></div>
+                        </div>
+                        <span id="tech-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 ALEJ - Plataforma Educativa. Impulsando la creatividad y el pensamiento crítico.</p>
+            <p>Desarrollado para jóvenes apasionados por aprender</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
