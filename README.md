@@ -1,51 +1,3 @@
-<<<<<<< HEAD
-# Programa Educativo - Alej
-
-Sistema educativo interactivo para estudiantes de secundaria y preparatoria.
-
-## 🎓 Descripción
-
-Programa educativo completo desarrollado por el Prof. Alej, diseñado para apoyar el aprendizaje de estudiantes de nivel secundaria y preparatoria en cuatro áreas principales:
-
-- 📐 **Matemáticas**: Álgebra, Geometría, Trigonometría
-- 🔬 **Ciencias**: Física, Química, Biología  
-- 📖 **Literatura**: Géneros literarios, Figuras retóricas, Comprensión lectora
-- 🏛️ **Historia**: Historia Universal y de América
-
-## 🚀 Inicio Rápido
-
-```bash
-python3 programa_educativo.py
-```
-
-## 📚 Características
-
-✅ Lecciones interactivas con explicaciones claras  
-✅ Ejercicios prácticos con retroalimentación inmediata  
-✅ Sistema de puntos y niveles de progreso  
-✅ Guardado automático del avance del estudiante  
-✅ Contenido apropiado para secundaria y preparatoria  
-
-## 📖 Documentación
-
-Para información detallada sobre cómo usar el programa, consulta la [Guía del Usuario](GUIA_USUARIO.md).
-
-## 🎯 Sistema de Niveles
-
-- **Principiante**: 0-49 puntos
-- **Intermedio**: 50-149 puntos  
-- **Avanzado**: 150-299 puntos
-- **Experto**: 300+ puntos
-
-## 💻 Requisitos
-
-- Python 3.6 o superior
-- No requiere librerías externas
-
----
-
-Desarrollado con 💙 para la educación
-=======
 # ALEJ - Plataforma Educativa Gamificada
 
 🎓 **A**prende **L**a **E**ducación **J**ugando
@@ -103,10 +55,13 @@ No se requieren dependencias adicionales - la aplicación funciona completamente
 
 ```
 alej/
-├── index.html          # Página principal con estructura HTML
-├── styles.css          # Estilos y diseño responsive
-├── script.js           # Lógica de la aplicación y gamificación
-└── README.md          # Documentación
+├── index.html              # Página principal con estructura HTML
+├── styles.css              # Estilos y diseño responsive
+├── script.js               # Lógica de la aplicación y gamificación
+├── programa_educativo.py   # Programa educativo interactivo en Python
+├── GUIA_USUARIO.md         # Guía de uso del programa educativo
+├── EJEMPLOS_USO.md         # Ejemplos de uso y progresión de aprendizaje
+└── README.md               # Documentación
 ```
 
 ## Características Técnicas
@@ -116,6 +71,41 @@ alej/
 - **Almacenamiento Local**: El progreso se guarda en localStorage
 - **Simulaciones Canvas**: Física y experimentos en tiempo real
 - **Interactividad Total**: Actividades completamente interactivas
+
+---
+
+## 📚 Programa Educativo en Python
+
+Además de la plataforma web, este repositorio incluye `programa_educativo.py`, un programa interactivo de terminal para estudiantes de secundaria y preparatoria.
+
+### 🚀 Inicio Rápido
+
+```bash
+python3 programa_educativo.py
+```
+
+### Materias incluidas
+
+- 📐 **Matemáticas**: Álgebra, Geometría, Trigonometría
+- 🔬 **Ciencias**: Física, Química, Biología
+- 📖 **Literatura**: Géneros literarios, Figuras retóricas, Comprensión lectora
+- 🏛️ **Historia**: Historia Universal y de América
+
+### Sistema de Niveles
+
+- **Principiante**: 0-49 puntos
+- **Intermedio**: 50-149 puntos
+- **Avanzado**: 150-299 puntos
+- **Experto**: 300+ puntos
+
+Para información detallada, consulta la [Guía del Usuario](GUIA_USUARIO.md).
+
+### Requisitos
+
+- Python 3.6 o superior
+- No requiere librerías externas
+
+---
 
 ## Objetivos Pedagógicos
 
@@ -147,4 +137,3 @@ Proyecto desarrollado para impulsar la educación STEAM (Ciencia, Tecnología, I
 ---
 
 💡 **¡Comienza a aprender, experimentar y jugar con ALEJ hoy mismo!**
->>>>>>> origin/main
