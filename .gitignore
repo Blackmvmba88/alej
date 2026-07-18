@@ -1,0 +1,13 @@
+# Archivos de progreso de estudiantes
+progreso_estudiante.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Archivos temporales
+*.log
+*.tmp
+.DS_Store

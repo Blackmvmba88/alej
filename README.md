@@ -55,10 +55,13 @@ No se requieren dependencias adicionales - la aplicación funciona completamente
 
 ```
 alej/
-├── index.html          # Página principal con estructura HTML
-├── styles.css          # Estilos y diseño responsive
-├── script.js           # Lógica de la aplicación y gamificación
-└── README.md          # Documentación
+├── index.html              # Página principal con estructura HTML
+├── styles.css              # Estilos y diseño responsive
+├── script.js               # Lógica de la aplicación y gamificación
+├── programa_educativo.py   # Programa educativo interactivo en Python
+├── GUIA_USUARIO.md         # Guía de uso del programa educativo
+├── EJEMPLOS_USO.md         # Ejemplos de uso y progresión de aprendizaje
+└── README.md               # Documentación
 ```
 
 ## Características Técnicas
@@ -68,6 +71,41 @@ alej/
 - **Almacenamiento Local**: El progreso se guarda en localStorage
 - **Simulaciones Canvas**: Física y experimentos en tiempo real
 - **Interactividad Total**: Actividades completamente interactivas
+
+---
+
+## 📚 Programa Educativo en Python
+
+Además de la plataforma web, este repositorio incluye `programa_educativo.py`, un programa interactivo de terminal para estudiantes de secundaria y preparatoria.
+
+### 🚀 Inicio Rápido
+
+```bash
+python3 programa_educativo.py
+```
+
+### Materias incluidas
+
+- 📐 **Matemáticas**: Álgebra, Geometría, Trigonometría
+- 🔬 **Ciencias**: Física, Química, Biología
+- 📖 **Literatura**: Géneros literarios, Figuras retóricas, Comprensión lectora
+- 🏛️ **Historia**: Historia Universal y de América
+
+### Sistema de Niveles
+
+- **Principiante**: 0-49 puntos
+- **Intermedio**: 50-149 puntos
+- **Avanzado**: 150-299 puntos
+- **Experto**: 300+ puntos
+
+Para información detallada, consulta la [Guía del Usuario](GUIA_USUARIO.md).
+
+### Requisitos
+
+- Python 3.6 o superior
+- No requiere librerías externas
+
+---
 
 ## Objetivos Pedagógicos
 
